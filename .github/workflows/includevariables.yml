@@ -29,13 +29,14 @@ jobs:
         run: |
           tags=$(git ls-remote --tags origin | awk '{print $2}' | awk -F/ '{print $NF}')
           echo "::set-output name=tags::$tags"
+          echo $tags
 
       - name: Compare Tags
         run: |
           tags=$GITHUB_ENV_TAGS
           existing_tag=${{ env.stableVersion }}
           if [[ $tags =~ (^|[[:space:]])$existing_tag($|[[:space:]]) ]]; then
-            echo "Tag $existing_tag exists!"
+            echo "Tag $existing_tag exists!!"
           else
             echo "Tag $existing_tag does not exist!"
           fi
