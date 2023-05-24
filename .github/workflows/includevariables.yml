@@ -42,9 +42,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions: write-all
     if: |
-      github.event.pull_request.merged == true &&
-      github.event.pull_request.base.ref == 'main'
-
+      ${{ github.head_ref }} == "main" && ${{ github.base_ref }} == "main" 
+      
     steps:
     
       - name: Create Release
