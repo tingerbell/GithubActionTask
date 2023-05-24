@@ -29,6 +29,7 @@ jobs:
         run: |
           tags=$(git ls-remote --tags origin | awk '{print $2}' | awk -F/ '{print $NF}')
           echo "::set-output name=tags::$tags"
+          echo $tags
 
       - name: Compare Tags
         run: |
