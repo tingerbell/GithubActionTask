@@ -15,9 +15,10 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Read variables
+        id: read_variables
         run: |
           stableVersion=$(grep "stableVersion:" .github/variables.yml | awk -F ": " '{print $2}')
-          echo "stableVersion=$stableVersion" >> $GITHUB_ENV
+          echo "::set-output name=stableVersion::$stableVersion"
           
       - name: Get Tags
         id: get_tags
@@ -29,7 +30,7 @@ jobs:
         run: |
           echo "Running build task..."
           tags="${{ steps.get_tags.outputs.tags }}"
-          existing_tag="${{ env.stableVersion }}"
+          existing_tag="${{ steps.read_variables.outputs.stableVersion }}"
           if [[ $tags =~ (^|[[:space:]])$existing_tag($|[[:space:]]) ]]; then
             echo "Tag $existing_tag exists! Failing the build."
             exit 1
@@ -52,8 +53,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ env.stableVersion }}
-          release_name: Release ${{ env.stableVersion }}
+          tag_name: ${{ needs.build.outputs.stableVersion }}
+          release_name: Release${{ needs.build.outputs.stableVersion }}
           body: |
             Changes in this Release
             - First Change
