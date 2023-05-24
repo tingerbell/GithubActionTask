@@ -62,6 +62,7 @@ jobs:
             - First Change
             - Second Change
             - Third Change
+            - Fouth Change
           draft: false
           prerelease: false
           
