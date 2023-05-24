@@ -6,6 +6,7 @@ on:
       - main
 
 jobs:
+
   build:
     runs-on: ubuntu-latest
     permissions: write-all
@@ -20,6 +21,7 @@ jobs:
           stableVersion=$(grep "stableVersion:" .github/variables.yml | awk -F ": " '{print $2}')
           echo "::set-output name=stableVersion::$stableVersion"
           
+          
       - name: Get Tags
         id: get_tags
         run: |
@@ -29,13 +31,13 @@ jobs:
       - name: Run build
         run: |
           echo "Running build task..."
-          tags="${{ steps.get_tags.outputs.tags }}"
-          existing_tag="${{ steps.read_variables.outputs.stableVersion }}"
-          if [[ $tags =~ (^|[[:space:]])$existing_tag($|[[:space:]]) ]]; then
-            echo "Tag $existing_tag exists! Failing the build."
+          existingtags="${{ steps.get_tags.outputs.tags }}"
+          current_tag="${{ steps.read_variables.outputs.stableVersion }}"
+          if [[ $existingtags =~ (^|[[:space:]])$current_tag($|[[:space:]]) ]]; then
+            echo "Tag $current_tag exists! Failing the build."
             exit 1
           else
-            echo "Tag $existing_tag does not exist. Build can continue."
+            echo "Tag $current_tag does not exist. Build can continue."
           fi
 
   deploy:
@@ -53,7 +55,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ needs.build.outputs.stableVersion }}
+          tag_name: ${{ needs.build.outputs.stableVersion }}"
           release_name: Release${{ needs.build.outputs.stableVersion }}
           body: |
             Changes in this Release
