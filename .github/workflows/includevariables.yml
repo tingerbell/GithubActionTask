@@ -45,7 +45,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions: write-all
     if: |
-      ${{ github.head_ref }} == "main" && ${{ github.base_ref }} == "main" 
+      ${{ github.head_ref }} == "main" && ${{ github.base_ref }} == "main" && github.event.pull_request.merged == true
       
     steps:
     
@@ -55,7 +55,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ needs.build.outputs.stableVersion }}"
+          tag_name: ${{ needs.build.outputs.stableVersion }}
           release_name: Release${{ needs.build.outputs.stableVersion }}
           body: |
             Changes in this Release
