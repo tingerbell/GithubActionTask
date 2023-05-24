@@ -21,7 +21,7 @@ jobs:
 
       - name: Read variables
         run: |
-          stableVersion=$(grep "stableVersion:" .github/workflows/variables.yml | awk -F ": " '{print $2}')
+          stableVersion=$(grep "stableVersion:" .github/variables.yml | awk -F ": " '{print $2}')
           echo "stableVersion=$stableVersion" >> $GITHUB_ENV
           
       - name: Get Tags
