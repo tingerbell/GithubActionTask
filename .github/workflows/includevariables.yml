@@ -1,5 +1,4 @@
-
-name: Github Tag and Release Workflow
+name: Build and Deploy
 
 on:
   pull_request:
@@ -10,11 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions: write-all
-    if: |
-      github.event.pull_request.merged == true &&
-      github.event.pull_request.base.ref == 'main'
-     
-      
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -41,8 +36,17 @@ jobs:
           else
             echo "Tag $existing_tag does not exist. Build can continue."
           fi
-         
-          
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions: write-all
+    if: |
+      github.event.pull_request.merged == true &&
+      github.event.pull_request.base.ref == 'main'
+
+    steps:
+    
       - name: Create Release
         id: create_release
         uses: actions/create-release@latest
@@ -58,3 +62,6 @@ jobs:
             - Third Change
           draft: false
           prerelease: false
+          
+          
+          
